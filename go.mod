@@ -1,9 +1,8 @@
-module source.vivint.com/scm/~katherine.nieman/findyshark
+module github.com/thaigoonch/findyshark
 
 go 1.17
 
 require (
-	github.com/h2non/filetype v1.1.3
 	github.com/jedib0t/go-pretty/v6 v6.2.4
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v1.2.1
