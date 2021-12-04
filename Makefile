@@ -1,5 +1,6 @@
 VERSION=0.0.2
 PATH_BUILD=build/
+PATH_BASH=bash/
 FILE_COMMAND=findyshark
 FILE_BIN1=findysharkbanner
 FILE_BIN2=findysharksrch
@@ -22,6 +23,6 @@ version:
 install:
 	install -d -m 755 '$(HOME)/bin/'
 	install $(PATH_BUILD)$(VERSION)/$(FILE_ARCH)/$(FILE_COMMAND) '$(GOPATH)/bin/$(FILE_COMMAND)'
-	install $(FILE_BIN1) '$(GOPATH)/bin/$(FILE_BIN1)'
-	install $(FILE_BIN2) '$(GOPATH)/bin/$(FILE_BIN2)'
-	install $(FILE_BIN3) '$(GOPATH)/bin/$(FILE_BIN3)'
+	install $(PATH_BASH)$(FILE_BIN1).sh.x '$(GOPATH)/bin/$(FILE_BIN1)'
+	install $(PATH_BASH)$(FILE_BIN2).sh.x '$(GOPATH)/bin/$(FILE_BIN2)'
+	install $(PATH_BASH)$(FILE_BIN3).sh.x '$(GOPATH)/bin/$(FILE_BIN3)'
