@@ -60,11 +60,10 @@ var rootCmd = &cobra.Command{
 		HashTab = app.RandomString(32)
 		inp = replaceWhiteSpace(inp)
 		ignoreFiles := getIgnoresFromConfig()
-
-		bashCmd := "./srch"
+		bashCmd := os.Getenv("GOPATH") + "/bin/findysharksrch"
 		istatus, _ := cmd.Flags().GetBool("insensitive")
-		if istatus {                          // if case-insensitive flag is true,
-			bashCmd = "./isrch" // use case-insensitive logic
+		if istatus {                                             // if case-insensitive flag is true,
+			bashCmd = os.Getenv("GOPATH") + "/bin/findysharkisrch" // use case-insensitive logic
 		}
 
 		output := doFind(inp, ignoreFiles, bashCmd, fileCriteria)
@@ -159,7 +158,7 @@ func doFind(term, ignore, bashCmd, fileCriteria string) string {
 }
 
 func drawShark(configStr string) string {
-	cmd, err := exec.Command("./banner", configStr).Output()
+	cmd, err := exec.Command(os.Getenv("GOPATH") + "/bin/findysharkbanner", configStr).Output()
 	if err != nil {
 		fmt.Printf("banner error: %s\n", err)
 	}
