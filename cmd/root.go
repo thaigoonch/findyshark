@@ -17,62 +17,97 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
-	"github.com/spf13/cobra"
+	"os/exec"
+	"strings"
 
+	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/thaigoonch/findyshark/app"
 )
 
 var cfgFile string
+var HashSpace string // hash that is used to replace spaces in user input
+var HashTab string   // hash that is used to replace tabs in user input
+var VERSION string
+
+const (
+	config_ignore = "ignore"
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "findyshark",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "A recursive-searching CLI tool searching tool",
+	Long:  "Runs out of pwd.",
+	Run: func(cmd *cobra.Command, args []string) {
+		fileCriteria := ":"
+		fileExt, _ := cmd.Flags().GetString("extension")
+		if fileExt != "" {                                   // if user specified a file extension,
+			if app.ValidateFileExtension(fileExt) {          // validate it
+				fileCriteria = fileCriteria + "." + fileExt  // use it
+			} else {
+				log.Fatal("Invalid file extension")
+			}
+		}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+		fmt.Print(drawShark(cfgFile))
+		inp := app.GetInput()
+		HashSpace = app.RandomString(32)
+		HashTab = app.RandomString(32)
+		inp = replaceWhiteSpace(inp)
+		ignoreFiles := getIgnoresFromConfig()
+
+		bashCmd := "searchContents"
+		istatus, _ := cmd.Flags().GetBool("insensitive")
+		if istatus {                          // if case-insensitive flag is true,
+			bashCmd = "searchCaseInsensitive" // use case-insensitive logic
+		}
+
+		output := doFind(inp, ignoreFiles, bashCmd, fileCriteria)
+		app.TableContentResults(output)
+	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
+func Execute(version string) {
+	VERSION = version
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 func init() {
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "path to config file (default is $HOME/.findyshark.yaml)")
+	rootCmd.PersistentFlags().BoolP("insensitive", "i", false, "search case-insensitive")
+	rootCmd.PersistentFlags().StringP("extension", "e", "", "search in specified file extension; e.g. txt")
+	flags := rootCmd.Flags()
 	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.findyshark.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	viper.BindPFlag(config_ignore, flags.Lookup(config_ignore))
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
+		if app.ValidateConfigPath(cfgFile) {
+			// Use config file from the flag.
+			viper.SetConfigFile(cfgFile)
+		} else {
+			log.Fatal("Invalid config file")
+		}
 	} else {
 		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
+		home, err := homedir.Dir()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
 		// Search config in home directory with name ".findyshark" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigType("yaml")
 		viper.SetConfigName(".findyshark")
 	}
 
@@ -80,6 +115,56 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
+		cfgFile = viper.ConfigFileUsed()
 	}
+}
+
+func getIgnoresFromConfig() string {
+	config_ignore := viper.GetString(config_ignore)
+	ignore_items := strings.Split(config_ignore, ",")
+
+	if strings.HasSuffix(config_ignore, ",") { // if trailing comma
+		ignore_items = ignore_items[:len(ignore_items)-1] // ignore the last entry
+	}
+	finalCmd := ""
+	i := 0
+	for range ignore_items {
+		ignore_items[i] = strings.Replace(ignore_items[i], " ", "", -1) // ignore spaces in config file entries
+		ignore_items[i] = app.Sanitize_inputs(ignore_items[i])
+		ignore_items[i] = "^" + ignore_items[i]
+		if i < len(ignore_items)-1 {
+			finalCmd = finalCmd + ignore_items[i] + ":[0-9]+:|"
+		} else {
+			finalCmd = finalCmd + ignore_items[i] + ":[0-9]+:"
+		}
+		i++
+	}
+	finalCmd = strings.Replace(finalCmd, "\\*", ".*", -1)
+	return finalCmd
+}
+
+func replaceWhiteSpace(value string) string {
+	value = strings.Replace(value, "\\ ", HashSpace, -1)
+	value = strings.Replace(value, "\\	", HashTab, -1)
+	return value
+}
+
+func doFind(term, ignore, bashCmd, fileCriteria string) string {
+	criteria := bashCmd + " " + fileCriteria + " " + HashSpace + " " + HashTab + " " + term + " " + ignore
+	cmd, err := exec.Command("./helper.sh", criteria).Output()
+	if err != nil {
+		fmt.Printf("helper.sh error: %s\n", err)
+	}
+	//fmt.Printf("%v", criteria)
+	output := string(cmd)
+	return output
+}
+
+func drawShark(configStr string) string {
+	cmd, err := exec.Command("./bash/banner.sh", configStr).Output()
+	if err != nil {
+		fmt.Printf("banner error: %s\n", err)
+	}
+	output := string(cmd)
+	return output
 }
