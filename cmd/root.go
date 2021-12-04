@@ -151,7 +151,7 @@ func replaceWhiteSpace(value string) string {
 
 func doFind(term, ignore, bashCmd, fileCriteria string) string {
 	criteria := bashCmd + " " + fileCriteria + " " + HashSpace + " " + HashTab + " " + term + " " + ignore
-	cmd, err := exec.Command("./helper.sh", criteria).Output()
+	cmd, err := exec.Command("./bash/helper.sh", criteria).Output()
 	if err != nil {
 		fmt.Printf("helper.sh error: %s\n", err)
 	}
