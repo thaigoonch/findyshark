@@ -7,5 +7,17 @@
       "Version": "main.VERSION"
     }
   },
-  "Tasks": ["interpolate-source", "default"]
+  "Tasks": ["interpolate-source", "default"],
+  "TasksExclude": [
+    "archive",
+    "codesign",
+    "copy-resources",
+    "deb",
+    "deb-dev",
+    "downloads-page",
+    "go-vet",
+    "go-test",
+    "go-install",
+    "rmbin"
+  ]
 }
