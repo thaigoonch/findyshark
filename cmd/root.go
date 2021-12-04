@@ -61,10 +61,10 @@ var rootCmd = &cobra.Command{
 		inp = replaceWhiteSpace(inp)
 		ignoreFiles := getIgnoresFromConfig()
 
-		bashCmd := "searchContents"
+		bashCmd := "./srch"
 		istatus, _ := cmd.Flags().GetBool("insensitive")
 		if istatus {                          // if case-insensitive flag is true,
-			bashCmd = "searchCaseInsensitive" // use case-insensitive logic
+			bashCmd = "./isrch" // use case-insensitive logic
 		}
 
 		output := doFind(inp, ignoreFiles, bashCmd, fileCriteria)
@@ -150,18 +150,16 @@ func replaceWhiteSpace(value string) string {
 }
 
 func doFind(term, ignore, bashCmd, fileCriteria string) string {
-	criteria := bashCmd + " " + fileCriteria + " " + HashSpace + " " + HashTab + " " + term + " " + ignore
-	cmd, err := exec.Command("./bash/helper.sh", criteria).Output()
+	cmd, err := exec.Command(bashCmd, fileCriteria, HashSpace, HashTab, term, ignore).Output()
 	if err != nil {
-		fmt.Printf("helper.sh error: %s\n", err)
+		fmt.Printf("%s error: %s\n", bashCmd, err)
 	}
-	//fmt.Printf("%v", criteria)
 	output := string(cmd)
 	return output
 }
 
 func drawShark(configStr string) string {
-	cmd, err := exec.Command("./bash/banner.sh", configStr).Output()
+	cmd, err := exec.Command("./banner", configStr).Output()
 	if err != nil {
 		fmt.Printf("banner error: %s\n", err)
 	}

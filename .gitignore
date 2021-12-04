@@ -3,3 +3,4 @@ __debug_bin
 findyshark
 test_dir/
 my_vendor/
+*.x.c
