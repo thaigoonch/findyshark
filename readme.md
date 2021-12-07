@@ -98,7 +98,7 @@ e.g. to ignore all `vendor`, `.git` directories and `go.sum`, `go.mod` files, in
 ignore: .*/vendor/*,*/.git/*,*/go.sum,*/go.mod
 ```
 
-Note: do not put a star as the first character. The CLI will not read in the ignores if you do. If you need to do so, put a `.` before it like in the e.
+Note: do not put a star as the first character. The CLI will not read in the ignores if you do. If you need to do so, put a `.` before it like in the example above.
 
 ## Usage
 
