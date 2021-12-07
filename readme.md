@@ -1,22 +1,96 @@
 # findyshark
 
-A recursive-searching CLI tool.
+A recursive-searching CLI tool for Linux
 
 ## Table of Contents
 
-- [Installation](##Installation)
-- [Config](##Config)
-- [Usage](##Usage)
+- [Installation](#installation)
+- [Config](#config)
+- [Usage](#usage)
 
 ## Installation
 
-TBD
+### Install Dependencies
+
+#### Install Go
+
+e.g. after verifying Go isn't already installed:
+
+``` bash
+wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
+```
+
+Add Go env variables to `~/.bash_profile`
+
+e.g. in `~/.bash_profile`:
+
+```  bash
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+export GOROOT=/usr/local/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+```
+
+``` bash
+sudo source ~/.bash_profile
+```
+
+Verify Go is installed; e.g.
+
+``` bash
+$ go version
+go version go1.17.3 linux/amd64
+```
+
+#### Install Other Dependencies
+
+Install `make`; e.g.
+``` bash
+sudo yum install make
+```
+
+Install `goxc`; e.g.
+``` bash
+sudo go get -v github.com/laher/goxc
+```
+
+Install `shc`; e.g.
+``` bash
+sudo yum install http://repo.okay.com.mx/centos/7/x86_64/release/okay-release-1-1.noarch.rpm
+sudo yum install shc
+```
+
+Install GCC; e.g.
+``` bash
+sudo yum group install "Development Tools"
+sudo yum install man-pages
+```
+
+### Install `findyshark`
+
+Clone this repo; e.g.
+``` bash
+git clone https://github.com/thaigoonch/findyshark.git
+ ```
+ 
+Build and install
+
+```
+make install
+```
+
+Verify `findyshark` is installed; e.g.
+``` bash
+$ findyshark version
+findyshark '0.0.2'
+```
 
 ## Config
 
-Create a config file at `$HOME/.findyshark.yaml`
+Optionally, create a config file at `$HOME/.findyshark.yaml`
 
-Set the `ignore` variable to a value or a comma-separated list of values. These should specify files and directories you want findyshark to exclude in searches. 
+Set the `ignore` variable to a value or a comma-separated list of values. These should specify files and directories you want findyshark to exclude in
 
 e.g. to ignore all `vendor`, `.git` directories and `go.sum`, `go.mod` files:
 
@@ -24,39 +98,52 @@ e.g. to ignore all `vendor`, `.git` directories and `go.sum`, `go.mod` files:
 ignore: .*/vendor/*,*/.git/*,*/go.sum,*/go.mod
 ```
 
-Note: do not put a star as the first character. The CLI will not read in the ignores if you do. If you need to do so, put a `.` before it like in the example above.
+Note: do not put a star as the first character. The CLI will not read in the ignores if you do. If you need to do so, put a `.` before it like in the e.
 
 ## Usage
 
 Runs out of pwd.
 
-To run:
+### To run:
 ``` bash
-findyshark [flags]
+  findyshark [flags]
+  findyshark [command]
 ```
 
-Flags:
-``` bash
-      --config string      path to config file (default is $HOME/.findyshark.yaml)
-  -e, --extension string   search in specified file extension; e.g. txt
-  -h, --help               help for findyshark
-  -i, --insensitive        search case-insensitive
-```
+#### Available Commands:
 
-Example output:
-``` 
+  `completion`  generate the autocompletion script for the specified shell
+  
+  `help`        Help about any command
+  
+  `version`     Show findyshark version
+  
+
+#### Flags:
+
+`--config` string      path to config file (default is $HOME/.findyshark.yaml)
+
+`-e`, `--extension` string   search in specified file extension; e.g. `txt`
+
+`-h`, `--help`               help for findyshark
+
+`-i`, `--insensitive`        search case-insensitive
+
+
+### Example output:
+```
         _________         .    .
        (..       \_    ,  |\  /|    +-+-+-+-+-+-+            dooo
         \       0  \  /|  \ \/ /    |findy|shark|                    doo doo
          \______    \/ |   \  /     +-+-+-+-+-+-+      doo                        da-doo
-           vvvvv       |  /   | 
+           vvvvv       |  /   |
             ^^^^       \_/    )     Using config file: /home/katherine-nieman/.findyshark.yaml
              `\_   )))       /
              / /\_   \ /    /       Ignoring: .*/vendor/*,*/.git/*,*/go.sum,*/go.mod
              |/   \___\|___/
-                       v   
+                       v
 
-find: 
+find:
 github
 ╭─────────────────────────────┬─────┬───────────────────────────────────────────────╮
 │ FILENAME                    │ LN# │ RESULT                                        │
@@ -78,3 +165,4 @@ github
 │ FOUND 7 RESULTS IN 4 FILES. │     │                                               │
 ╰─────────────────────────────┴─────┴───────────────────────────────────────────────╯
 ```
+
