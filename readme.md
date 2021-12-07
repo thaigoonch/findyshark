@@ -86,6 +86,8 @@ $ findyshark version
 findyshark '0.0.2'
 ```
 
+Note: Do not move the installed binary files out of the `'$(GOPATH)/bin/` location, or the program will not work. If you need to put them elsewhere, make sym links.
+
 ## Config
 
 Optionally, create a config file at `$HOME/.findyshark.yaml`
@@ -98,7 +100,7 @@ e.g. to ignore all `vendor`, `.git` directories and `go.sum`, `go.mod` files, in
 ignore: .*/vendor/*,*/.git/*,*/go.sum,*/go.mod
 ```
 
-Note: do not put a star as the first character. The CLI will not read in the ignores if you do. If you need to do so, put a `.` before it like in the example above.
+Note: do not put a `*` as the first character. The CLI will not read in the ignores if you do. If you need to do so, put a `.` before it like in the example above.
 
 ## Usage
 
