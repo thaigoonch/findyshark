@@ -92,7 +92,7 @@ Optionally, create a config file at `$HOME/.findyshark.yaml`
 
 Set the `ignore` variable to a value or a comma-separated list of values. These should specify files and directories you want findyshark to exclude in
 
-e.g. to ignore all `vendor`, `.git` directories and `go.sum`, `go.mod` files:
+e.g. to ignore all `vendor`, `.git` directories and `go.sum`, `go.mod` files, in `$HOME/.findyshark.yaml`:
 
 ``` bash
 ignore: .*/vendor/*,*/.git/*,*/go.sum,*/go.mod
@@ -137,7 +137,7 @@ Runs out of pwd.
         \       0  \  /|  \ \/ /    |findy|shark|                    doo doo
          \______    \/ |   \  /     +-+-+-+-+-+-+      doo                        da-doo
            vvvvv       |  /   |
-            ^^^^       \_/    )     Using config file: /home/katherine-nieman/.findyshark.yaml
+            ^^^^       \_/    )     Using config file: /home/it3510/.findyshark.yaml
              `\_   )))       /
              / /\_   \ /    /       Ignoring: .*/vendor/*,*/.git/*,*/go.sum,*/go.mod
              |/   \___\|___/
