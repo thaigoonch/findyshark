@@ -14,14 +14,18 @@ A recursive-searching CLI tool for Linux
 
 #### Install Go
 
+https://go.dev/doc/install
+
 e.g. after verifying Go isn't already installed:
 
 ``` bash
 wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
+```
+``` bash
+sudo tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
 ```
 
-Add Go env variables to `~/.bash_profile`
+Add /usr/local/go/bin to the PATH environment variable
 
 e.g. in `~/.bash_profile`:
 
@@ -52,7 +56,7 @@ sudo yum install make
 
 Install `goxc`; e.g.
 ``` bash
-sudo go get -v github.com/laher/goxc
+go get -v github.com/laher/goxc
 ```
 
 Install `shc`; e.g.
@@ -72,11 +76,17 @@ sudo yum install man-pages
 Clone this repo; e.g.
 ``` bash
 git clone https://github.com/thaigoonch/findyshark.git
+```
+
+Navigate to the `findyshark` repo; e.g.
+``` bash
+cd findyshark
  ```
- 
+
 Build and install
 
-```
+Run:
+``` bash
 make install
 ```
 
@@ -86,7 +96,7 @@ $ findyshark version
 findyshark '0.0.2'
 ```
 
-Note: Do not move the installed binary files out of the `'$(GOPATH)/bin/` location, or the program will not work. If you need to put them elsewhere, make sym links.
+Note: Do not move the installed binary files out of the `$(GOPATH)/bin/` location, or the program will not work. If you need to put them elsewhere, make sym links.
 
 ## Config
 
