@@ -20,8 +20,6 @@ e.g. after verifying Go isn't already installed:
 
 ``` bash
 wget https://golang.org/dl/go1.17.3.linux-amd64.tar.gz
-```
-``` bash
 sudo tar -C /usr/local -xzf go1.17.3.linux-amd64.tar.gz
 ```
 
@@ -36,6 +34,7 @@ export GOROOT=/usr/local/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 ```
 
+Reload the profile file; e.g.
 ``` bash
 sudo source ~/.bash_profile
 ```
@@ -133,13 +132,13 @@ Runs out of pwd.
 
 #### Flags:
 
-`--config` string      path to config file (default is $HOME/.findyshark.yaml)
+`--config` - path to config file (default is `$HOME/.findyshark.yaml`)
 
-`-e`, `--extension` string   search in specified file extension; e.g. `txt`
+`-e`, `--extension` - search in specified file extension; e.g. `txt`
 
-`-h`, `--help`               help for findyshark
+`-h`, `--help` - help for findyshark
 
-`-i`, `--insensitive`        search case-insensitive
+`-i`, `--insensitive` - search case-insensitive
 
 
 ### Example output:
