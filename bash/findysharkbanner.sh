@@ -3,7 +3,7 @@ config=$1
 ignores=$(cat $config | grep ignore)
 ignores=${ignores//"ignore: "/}
 GRN='\033[1;32m'
-GRYI='\033[7;30m'
+GRYI='\033[7;34m'
 GRY='\033[1;30m'
 NC='\033[0m' # No Color
 printf "        ${GRY}_________         .    .${NC}\
